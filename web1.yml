@@ -1,0 +1,16 @@
+---
+- name: Install apache http web server
+  hosts: webserver
+
+  tasks:
+      - name: install httpd
+        yum:  name=httpd  state=latest
+        become: yes
+      
+      - name: check httpd status
+        service:  name=httpd  state=started
+      
+      - name: copy index file
+        copy:
+          src: index.html
+          dest: /var/www/html/
