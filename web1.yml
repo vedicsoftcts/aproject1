@@ -1,17 +1,25 @@
 ---
 - name: Install apache http web server
   hosts: webserver
-
+  become: yes
   tasks:
-      - name: install httpd
-        yum:  name=httpd  state=latest
-        become: yes
-      
-      - name: check httpd status
-        service:  name=httpd  state=started
-      
-      - name: copy index file
-        copy:
-          src: index.html
-          dest: /var/www/html/
+
+    - name: Install latest version of httpd
+      ansible.builtin.yum:
+        name: httpd
+        state: latest
+
+    - name: Ensure httpd status is started and enabled on boot
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Copy index file to web directory
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0644'
 ...
